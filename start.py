@@ -63,11 +63,9 @@ def generate_random_string(length=10):
 class ExtJsonFormatter(jsonlogger.JsonFormatter):
 
     def add_fields(self, log_record, record, message_dict):
-        super(ExtJsonFormatter, self).add_fields(log_record, record,
-                                                 message_dict)
+        super(ExtJsonFormatter, self).add_fields(log_record, record, message_dict)
         if not log_record.get('timestamp'):
-            now = datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%SZ')
-            log_record['timestamp'] = now
+            log_record['timestamp'] = get_log_record_timestamp()
         if log_record.get('level'):
             log_record['level'] = log_record['level'].upper()
         else:
@@ -83,9 +81,14 @@ logging.basicConfig(level=logging.INFO, handlers=[logHandler])
 class LogRecord:
 
     def __init__(self, level, message, extra):
+        self.timestamp = get_log_record_timestamp()
         self.level = level
         self.message = message
         self.extra = extra
+
+
+def get_log_record_timestamp():
+    return datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%SZ')
 
 
 class Log:
@@ -164,6 +167,9 @@ class Log:
     def write(self):
         with self._lock:
             for record in self._records.values():
+                if not record.extra:
+                    record.extra = {}
+                record.extra['timestamp'] = record.timestamp
                 self._logger.log(record.level,
                                  record.message,
                                  extra=record.extra)
