@@ -46,7 +46,7 @@ ctx: SSLContext = create_default_context(cafile=where())
 ctx.check_hostname = False
 ctx.verify_mode = CERT_NONE
 
-__version__: str = "2.4 SNAPSHOT"
+__version__: str = "1.0"
 __dir__: Path = Path(__file__).parent
 __ip__: Any = None
 
@@ -170,6 +170,7 @@ class Log:
                 if not record.extra:
                     record.extra = {}
                 record.extra['timestamp'] = record.timestamp
+                record.extra['MHDDoS_version'] = __version__
                 self._logger.log(record.level,
                                  record.message,
                                  extra=record.extra)
