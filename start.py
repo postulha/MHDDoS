@@ -50,7 +50,7 @@ __version__: str = "2.4 SNAPSHOT"
 __dir__: Path = Path(__file__).parent
 __ip__: Any = None
 
-log_timeout = 10
+log_timeout = 30
 log_batch = 10
 
 
